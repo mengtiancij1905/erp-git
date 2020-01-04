@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+	</bean>
+	
+	<!-- 自定义realm -->
+	<bean id="myRealm" class="com.itqf.erp.realm.MyRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher"></property>
+	</bean>
+	<!-- 创建凭证匹配器 -->
+	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<!-- 散列算法 -->
+		<property name="hashAlgorithmName" value="md5"/>
+		<!-- 散列次数 -->
+		<property name="hashIterations" value="2"></property>
+	</bean>
+
+<!-- 配置过滤规则 -->
+ <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 登录的地址 -->
+        <property name="loginUrl" value="/login.html"/>
+        <!-- 认证成功后的地址，-->
+        <property name="successUrl" value="/index.html"/>
+        
+        <!-- 未授权访问的Url-->
+        <property name="unauthorizedUrl" value="/refuse.action"/>
+        <property name="filterChainDefinitions">
+            <value>
+            	<!-- 可以匿名访问 -->
+                /login.html = anon
+                /images/** = anon
+                /js/** = anon
+                /styles/** = anon
+                /css/** = anon
+                /easyui/** = anon
+
+                /emp/checklogin.action = anon
+
+                <!-- 实现退出功能，可以不用提供控制器 -->
+                /logout.action = logout
+
+                <!-- 认证之后才能访问 -->
+                <!--/** = anon-->
+            </value>
+        </property>
+    </bean>
+</beans>

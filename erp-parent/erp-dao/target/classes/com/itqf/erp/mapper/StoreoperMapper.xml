@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itqf.erp.mapper.StoreoperMapper" >
+  <resultMap id="BaseResultMap" type="com.itqf.erp.pojo.Storeoper" >
+    <id column="UUID" property="uuid" jdbcType="INTEGER" />
+    <result column="EMPUUID" property="empuuid" jdbcType="INTEGER" />
+    <result column="OPERTIME" property="opertime" jdbcType="DATE" />
+    <result column="STOREUUID" property="storeuuid" jdbcType="INTEGER" />
+    <result column="GOODSUUID" property="goodsuuid" jdbcType="INTEGER" />
+    <result column="NUM" property="num" jdbcType="INTEGER" />
+    <result column="TYPE" property="type" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    UUID, EMPUUID, OPERTIME, STOREUUID, GOODSUUID, NUM, TYPE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.itqf.erp.pojo.StoreoperExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from storeoper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from storeoper
+    where UUID = #{uuid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from storeoper
+    where UUID = #{uuid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.itqf.erp.pojo.StoreoperExample" >
+    delete from storeoper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.itqf.erp.pojo.Storeoper" >
+    insert into storeoper (UUID, EMPUUID, OPERTIME, 
+      STOREUUID, GOODSUUID, NUM, 
+      TYPE)
+    values (#{uuid,jdbcType=INTEGER}, #{empuuid,jdbcType=INTEGER}, #{opertime,jdbcType=DATE}, 
+      #{storeuuid,jdbcType=INTEGER}, #{goodsuuid,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, 
+      #{type,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.itqf.erp.pojo.Storeoper" >
+    insert into storeoper
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        UUID,
+      </if>
+      <if test="empuuid != null" >
+        EMPUUID,
+      </if>
+      <if test="opertime != null" >
+        OPERTIME,
+      </if>
+      <if test="storeuuid != null" >
+        STOREUUID,
+      </if>
+      <if test="goodsuuid != null" >
+        GOODSUUID,
+      </if>
+      <if test="num != null" >
+        NUM,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uuid != null" >
+        #{uuid,jdbcType=INTEGER},
+      </if>
+      <if test="empuuid != null" >
+        #{empuuid,jdbcType=INTEGER},
+      </if>
+      <if test="opertime != null" >
+        #{opertime,jdbcType=DATE},
+      </if>
+      <if test="storeuuid != null" >
+        #{storeuuid,jdbcType=INTEGER},
+      </if>
+      <if test="goodsuuid != null" >
+        #{goodsuuid,jdbcType=INTEGER},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.itqf.erp.pojo.StoreoperExample" resultType="java.lang.Integer" >
+    select count(*) from storeoper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update storeoper
+    <set >
+      <if test="record.uuid != null" >
+        UUID = #{record.uuid,jdbcType=INTEGER},
+      </if>
+      <if test="record.empuuid != null" >
+        EMPUUID = #{record.empuuid,jdbcType=INTEGER},
+      </if>
+      <if test="record.opertime != null" >
+        OPERTIME = #{record.opertime,jdbcType=DATE},
+      </if>
+      <if test="record.storeuuid != null" >
+        STOREUUID = #{record.storeuuid,jdbcType=INTEGER},
+      </if>
+      <if test="record.goodsuuid != null" >
+        GOODSUUID = #{record.goodsuuid,jdbcType=INTEGER},
+      </if>
+      <if test="record.num != null" >
+        NUM = #{record.num,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null" >
+        TYPE = #{record.type,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update storeoper
+    set UUID = #{record.uuid,jdbcType=INTEGER},
+      EMPUUID = #{record.empuuid,jdbcType=INTEGER},
+      OPERTIME = #{record.opertime,jdbcType=DATE},
+      STOREUUID = #{record.storeuuid,jdbcType=INTEGER},
+      GOODSUUID = #{record.goodsuuid,jdbcType=INTEGER},
+      NUM = #{record.num,jdbcType=INTEGER},
+      TYPE = #{record.type,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.itqf.erp.pojo.Storeoper" >
+    update storeoper
+    <set >
+      <if test="empuuid != null" >
+        EMPUUID = #{empuuid,jdbcType=INTEGER},
+      </if>
+      <if test="opertime != null" >
+        OPERTIME = #{opertime,jdbcType=DATE},
+      </if>
+      <if test="storeuuid != null" >
+        STOREUUID = #{storeuuid,jdbcType=INTEGER},
+      </if>
+      <if test="goodsuuid != null" >
+        GOODSUUID = #{goodsuuid,jdbcType=INTEGER},
+      </if>
+      <if test="num != null" >
+        NUM = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=CHAR},
+      </if>
+    </set>
+    where UUID = #{uuid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.itqf.erp.pojo.Storeoper" >
+    update storeoper
+    set EMPUUID = #{empuuid,jdbcType=INTEGER},
+      OPERTIME = #{opertime,jdbcType=DATE},
+      STOREUUID = #{storeuuid,jdbcType=INTEGER},
+      GOODSUUID = #{goodsuuid,jdbcType=INTEGER},
+      NUM = #{num,jdbcType=INTEGER},
+      TYPE = #{type,jdbcType=CHAR}
+    where UUID = #{uuid,jdbcType=INTEGER}
+  </update>
+</mapper>

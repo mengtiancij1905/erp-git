@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>部门列表</title>
+    <!--样式文件-->
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/default/easyui.css">
+    <!--图标演示文件-->
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
+    <!--jQuery文件-->
+    <script type="text/javascript" src="/easyui/jquery.min.js"></script>
+    <!--基于jQuery的一些easyui的实现效果-->
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script src="/easyui/jquery.serializejson.min.js"></script>
+
+</head>
+<script type="text/javascript">
+
+    //标记变量，用来记录“保存按钮”需要执行的行为
+    var method="";
+
+    function del(uuid){
+        $.messager.confirm("询问", "确认删除吗？", function(value){
+           if(value){
+               //执行删除
+               $.ajax({
+                    url:"/dep/delete.action?uuid="+uuid,
+                    dataType:'json',
+                    success:function(data){//ErpResult:{status, message, data}
+                        if(data.status == "ok"){
+                            //删除成功
+                            $("#grid").datagrid("reload")
+                        }
+                        $.messager.alert('提示', data.message);
+                    }
+               });
+           }
+        });
+    }
+
+    //编辑部门
+    function edit(uuid){
+        method="update";
+        $("#editWindow").window("open");
+
+        //给表单填充数据
+        $("#editForm").form("load", "/dep/get.action?uuid="+uuid);
+    }
+
+
+    $(function () {
+        $("#grid").datagrid({
+            url:"/dep/search.action",
+            columns:[[
+                {field:"uuid",title:"部门编号",width:100},
+                {field:"depName",title:"部门名称",width:100},
+                {field:"tele",title:"部门电话",width:100},
+                {field:"-", title:"操作",width:100, formatter:function(value, row, index){
+                    //value:当前列的值
+                        //row:当前行对象
+                        //index:当前行号
+                      return "<a href='javascript:void(0)' onclick='del("+row.uuid+")'>删除</a>&nbsp;<a href='javascript:void(0)' onclick='edit("+row.uuid+")'>编辑</a>" ;
+                    }}
+            ]],
+            singleSelect:true,
+            pagination:true,
+            toolbar:[
+                {
+                    iconCls:'icon-add',
+                    text:'增加',
+                    handler:function(){
+                        method="add";
+                        //清空表单数据
+                        $("#editForm").form("clear");
+
+                        $("#editWindow").window("open")
+                    }
+                }
+            ]
+        });
+
+        $("#btnSearch").click(function(){
+            //1.获取表单数据
+            //将表单的数据转换成json对象
+            //{"depName":"总裁办","tele":"110"}
+            var formJson= $("#seachForm").serializeJSON();
+
+            //JSON.stringify:将json对象转换成字符串
+           //2.发送ajax请求
+
+            $("#grid").datagrid("load", formJson);
+        })
+
+
+        $("#btnSave").bind("click", function(){
+            //1.获取表单数据
+            var formJson = $("#editForm").serializeJSON();
+            //3. 执行修改
+            $.ajax({
+                url:"/dep/"+method+".action",
+                type:'post',
+                data:formJson,
+                dataType:'json',
+                success:function(data){
+                    if (data.status == "ok") {
+                        $.messager.alert("提示", data.message);
+                        //清空表单数据
+                        $("#editForm").form("clear");
+                        //关闭窗口
+                        $("#editWindow").window("close");
+                        //刷新datagrid
+                        $("#grid").datagrid("reload")
+                    }
+                }
+            })
+        })
+    })
+</script>
+<body>
+<div style="padding:5px;" class="easyui-panel">
+    <form id="seachForm">
+    部门名称：<input type="text" name="depName"/>
+    电话号码：<input type="text" name="tele"/>
+        <input type="button" id="btnSearch" value="查询"/>
+    </form>
+</div>
+<table id="grid"></table>
+<div id="editWindow" class="easyui-window" title="部门编辑" style="width:300px;height:200px" data-options="closed:true">
+    <form id="editForm">
+        <input type="hidden" name="uuid" />
+        <table style="margin: 20px auto">
+            <tr><td>名称：</td><td><input type="text" name="depName"/></td></tr>
+            <tr><td>电话：</td><td><input type="text" name="tele"/></td></tr>
+            <tr><td colspan="2" align="center">
+                <input type="button" value="保存" id="btnSave"/>
+            </td></tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

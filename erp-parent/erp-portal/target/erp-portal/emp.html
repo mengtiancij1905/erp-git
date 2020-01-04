@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>员工管理</title>
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
+    <script type="text/javascript" src="/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <!--语言包-->
+    <script src="/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+    <script src="/easyui/jquery.serializejson.min.js"></script>
+    <script src="/js/date.js"></script>
+    <script type="text/javascript">
+        function del(uuid){
+            alert("删除")
+        }
+
+        function edit(uuid){
+            //1.显示窗口
+            $("#editWindow").window("open");
+           //2.根据当前员工编号查询
+            $("#editForm").form("load", "/emp/get.action?uuid="+uuid);
+        }
+
+        $(function(){
+            $("#grid").datagrid({
+                url:"/emp/search.action",
+                columns:[[
+                    {field:"uuid",title:"用户编号",width:100},
+                    {field:"username",title:"登录名",width:100},
+                    {field:"name",title:"姓名",width:100},
+                    {field:"gender",title:"性别",width:100, formatter:function(value){
+                        return value==1?"男":"女";
+                        }},
+                    {field:"email",title:"邮箱",width:100},
+                    {field:"tele",title:"电话",width:100},
+                    {field:"address",title:"地址",width:100},
+                    {field:"birthday",title:"生日",width:100, formatter:function(value){
+                        //value:当前列的值
+                            return new Date(value).Format("yyyy-MM-dd");
+                        }},
+                    {field:"dep",title:"部门名称",width:100,formatter:function(value){
+                        if(value!=null) {
+                            return value.depName;
+                        }else{
+                            return "";
+                        }
+                        }},
+                    {field:"-", title:"操作",width:100, formatter:function(value, row, index){
+                            return "<a href='javascript:void(0)' onclick='del("+row.uuid+")'>删除</a>&nbsp;<a href='javascript:void(0)' onclick='edit("+row.uuid+")'>编辑</a>" ;
+                    }}
+                ]],
+                singleSelect:true,
+                pagination:true,
+                toolbar:[
+                    {
+                        iconCls:'icon-add',
+                        text:'增加',
+                        handler:function(){
+                            //顯示增加窗口
+                            $("#editWindow").window("open");
+                            //清空表单数据
+                            $("#editForm").form("clear");
+                        }
+                    }
+                ]
+            })
+
+            //执行搜索
+            $("#btnSearch").bind("click",function(){
+                //1.获取表单数据
+                let formJson = $("#searchForm").serializeJSON();
+
+                //2.发送ajax请求
+                $("#grid").datagrid("load", formJson);
+            })
+
+            //添加新员工
+            $("#btnSave").bind("click",function(){
+                let formJson = $("#editForm").serializeJSON();
+
+                //获取验证的结果
+               let retResult =  $("#editForm").form("validate");
+               if(retResult) {
+                  $.ajax({
+                      url:"/emp/add.action",
+                      type:'post',
+                      data:formJson,
+                      success:function(data){//ErpResult:{status, message, data}
+                        if(data.status=="ok"){
+                            //添加成功
+                            //1.清空表单
+                            $("#editForm").form("clear");
+                            //2.关闭窗口
+                            $("#editWindow").window("close");
+
+                            //3.刷新datagrid
+                            $("#grid").datagrid("reload");
+                        }
+
+                        $.messager.alert("提示", data.message);
+                      }
+                  })
+               }
+            })
+        })
+
+    </script>
+
+</head>
+<body>
+<div class="easyui-panel"
+     style="padding: 4px; border-bottom: 0px;">
+    <form id="searchForm">
+        登录名称：<input type="text" name="username" />
+        姓名：<input type="text"	name="name" />
+        邮箱：<input type="text" name="email" />
+        电话：<input	type="text" name="tele" /> <br/>
+        性别： <label>
+        <input type="radio" name="gender" value="" />全部</label>
+        <label><input type="radio" name="gender" value="0" />女</label>
+        <label><input type="radio" name="gender" value='1' />男</label>
+        <br />
+        地址：<input type="text" name="address" />
+        出生日期：<input type="text" name="birthday"	class="easyui-datebox" style="wdith: 100px" />
+        至：<input type="text"	name="birthday2" class="easyui-datebox" style="wdith: 100px" />
+        部门：<input type="text" name="depuuid" class="easyui-combobox" data-options="url:'/dep/list.action',textField:'depName',valueField:'uuid'" />
+        <input type="button" id="btnSearch" value="查询" />
+    </form>
+    <div style="height: 2px;"></div>
+</div>
+<table id="grid"></table>
+<div id="editWindow" class="easyui-window" title="员工编辑" style="width: 600px; height: 400px" data-options="closed:true">
+    <form id="editForm">
+        <input type="hidden" name="uuid" />
+        <table style="margin: 20px auto">
+            <tr>
+                <td>登陸名称：</td>
+                <td><input type="text" class="easyui-validatebox" data-options="required:true" missingMessage="登录名必须填写" name="username" /></td>
+            </tr>
+            <tr>
+                <td>名称：</td>
+                <td><input type="text" name="name" /></td>
+            </tr>
+            <tr>
+                <td>邮箱：</td>
+                <td><input type="text" name="email" /></td>
+            </tr>
+            <tr>
+                <td>电话：</td>
+                <td><input type="text" name="tele" /></td>
+            </tr>
+            <tr>
+                <td>性别：</td>
+                <td><label><input type="radio" name="gender" value='0' />女</label>
+                    <label><input type="radio" name="gender" value='1' />男</label></td>
+            </tr>
+            <tr>
+                <td>地址：</td>
+                <td><input type="text" name="address" /></td>
+            </tr>
+            <tr>
+                <td>出生日期：</td>
+                <td><input type="text" name="birthday" class="easyui-datebox" editable="false" /></td>
+            </tr>
+            <tr>
+                <td>部门：</td>
+                <td><input type="text" class="easyui-combobox" data-options="url:'/dep/list.action',valueField:'uuid', textField:'depName', required:true, missingMessage:'请选择部门'" name="depuuid" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="button" value="保存" id="btnSave" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

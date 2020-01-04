@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>销售统计表</title>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" type="text/css"
+          href="/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
+    <script type="text/javascript" src="/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.serializejson.min.js"></script>
+    <script type="text/javascript" src="/easyui/highcharts.js"></script>
+    <script type="text/javascript" src="/js/report.js"></script>
+    <script type="text/javascript">
+        var url = '/report/orderReport.action';
+        var columns = [ [ {
+            field : 'name',title : '商品类别',width : 200
+        }, {
+            field : 'y',title : '销售额',width : 200
+        } ] ];
+        var chartType = 'pie';
+    </script>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'center',title:'销售统计表'" style="padding: 5px; background: #eee;">
+    <form id="searchForm">
+        开始日期：<input name="begin" class="easyui-datebox"> 截止日期：<input name="end" class="easyui-datebox"> <a class="easyui-linkbutton" data-options="iconCls:'icon-search'"
+            id="btnSearch">查询</a>
+    </form>
+    <table id="grid"></table>
+</div>
+<div data-options="region:'east',iconCls:'icon-reload',title:'销售统计图',split:true" style="width: 505px;">
+    <!-- 统计饼图-->
+    <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+</div>
+</body>
+</html>

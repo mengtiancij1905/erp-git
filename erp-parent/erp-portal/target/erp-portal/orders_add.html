@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>采购申请</title>
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
+    <script type="text/javascript" src="/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.serializejson.min.js"></script>
+    <script type="text/javascript" src="/js/orders_add.js"></script>
+</head>
+<body>
+<form id="orderForm">
+供应商：<input id="supplier" name="supplieruuid"/>
+</form>
+<table id="grid"></table>
+总价:<span id="sum">0</span><br/>
+<input type="button" id="btnSave" value="提交采购单"/>
+</body>
+</html>
